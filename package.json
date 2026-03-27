@@ -1,0 +1,17 @@
+{
+  "name": "game-center",
+  "version": "1.0.0",
+  "description": "游戏中心平台 - 包含6个经典小游戏",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "cors": "^2.8.5",
+    "ws": "^8.14.2"
+  }
+}

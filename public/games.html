@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-color="purple">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>游戏中心 - 所有游戏</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo">
+        <span class="logo-icon">🎮</span>
+        <span class="logo-text">游戏中心</span>
+      </a>
+      
+      <nav class="nav-desktop" id="navLinksDesktop"></nav>
+      
+      <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" title="切换主题">🎨</button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 移动端菜单 -->
+  <div class="mobile-menu" id="mobileMenu">
+    <nav id="navLinksMobile"></nav>
+  </div>
+
+  <!-- 登录提示 -->
+  <div class="login-required hidden" id="loginRequired">
+    <div class="login-required-card">
+      <div class="login-icon">🔒</div>
+      <h2>需要登录</h2>
+      <p>登录后即可畅玩所有游戏，记录分数并参与排行榜！</p>
+      <a href="/auth.html" class="btn btn-primary">立即登录</a>
+      <a href="/" class="btn btn-secondary">← 返回首页</a>
+    </div>
+  </div>
+
+  <!-- 主要内容 -->
+  <main class="main">
+    <div class="games-page" id="gamesPage">
+      <!-- 英雄区域 -->
+      <div class="games-hero">
+        <h1>🎮 游戏中心</h1>
+        <p>选择你喜欢的游戏，开始挑战吧！</p>
+        <div class="games-hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value">6</div>
+            <div class="hero-stat-label">游戏</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="totalPlayers">--</div>
+            <div class="hero-stat-label">玩家</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="totalGames">--</div>
+            <div class="hero-stat-label">场次</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 游戏网格 -->
+      <div class="games-grid">
+        <div class="game-card game-card-2048" onclick="startGame('2048')" style="animation-delay: 0.1s;">
+          <div class="game-card-banner">
+            <div class="game-card-icon">🔢</div>
+          </div>
+          <div class="game-card-body">
+            <h3>2048</h3>
+            <p>合并数字，挑战2048</p>
+            <div class="game-card-stats">
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-2048-players">--</div>
+                <div class="game-stat-label">玩家</div>
+              </div>
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-2048-best">--</div>
+                <div class="game-stat-label">最高分</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-card game-card-snake" onclick="startGame('snake')" style="animation-delay: 0.2s;">
+          <div class="game-card-banner">
+            <div class="game-card-icon">🐍</div>
+          </div>
+          <div class="game-card-body">
+            <h3>贪吃蛇</h3>
+            <p>经典街机，越吃越长</p>
+            <div class="game-card-stats">
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-snake-players">--</div>
+                <div class="game-stat-label">玩家</div>
+              </div>
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-snake-best">--</div>
+                <div class="game-stat-label">最高分</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-card game-card-flappy" onclick="startGame('flappy')" style="animation-delay: 0.3s;">
+          <div class="game-card-banner">
+            <div class="game-card-icon">🐦</div>
+          </div>
+          <div class="game-card-body">
+            <h3>Flappy Bird</h3>
+            <p>控制小鸟，穿越管道</p>
+            <div class="game-card-stats">
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-flappy-players">--</div>
+                <div class="game-stat-label">玩家</div>
+              </div>
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-flappy-best">--</div>
+                <div class="game-stat-label">最高分</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-card game-card-memory" onclick="startGame('memory')" style="animation-delay: 0.4s;">
+          <div class="game-card-banner">
+            <div class="game-card-icon">🃏</div>
+          </div>
+          <div class="game-card-body">
+            <h3>记忆翻牌</h3>
+            <p>找出相同配对，考验记忆力</p>
+            <div class="game-card-stats">
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-memory-players">--</div>
+                <div class="game-stat-label">玩家</div>
+              </div>
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-memory-best">--</div>
+                <div class="game-stat-label">最高分</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-card game-card-minesweeper" onclick="startGame('minesweeper')" style="animation-delay: 0.5s;">
+          <div class="game-card-banner">
+            <div class="game-card-icon">💣</div>
+          </div>
+          <div class="game-card-body">
+            <h3>扫雷</h3>
+            <p>经典推理，避开所有地雷</p>
+            <div class="game-card-stats">
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-minesweeper-players">--</div>
+                <div class="game-stat-label">玩家</div>
+              </div>
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-minesweeper-best">--</div>
+                <div class="game-stat-label">最高分</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-card game-card-breakout" onclick="startGame('breakout')" style="animation-delay: 0.6s;">
+          <div class="game-card-banner">
+            <div class="game-card-icon">🧱</div>
+          </div>
+          <div class="game-card-body">
+            <h3>打砖块</h3>
+            <p>反弹球消除所有砖块</p>
+            <div class="game-card-stats">
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-breakout-players">--</div>
+                <div class="game-stat-label">玩家</div>
+              </div>
+              <div class="game-stat">
+                <div class="game-stat-value" id="stat-breakout-best">--</div>
+                <div class="game-stat-label">最高分</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 排行榜 -->
+      <div class="leaderboard-section" id="leaderboardSection">
+        <div class="leaderboard-header">
+          <div class="leaderboard-title">
+            <span>🏆</span>
+            <span>排行榜</span>
+          </div>
+          <div class="leaderboard-tabs">
+            <button class="leaderboard-tab active" onclick="switchLeaderboard('2048')">2048</button>
+            <button class="leaderboard-tab" onclick="switchLeaderboard('snake')">贪吃蛇</button>
+            <button class="leaderboard-tab" onclick="switchLeaderboard('flappy')">Flappy 鸟</button>
+            <button class="leaderboard-tab" onclick="switchLeaderboard('memory')">记忆翻牌</button>
+            <button class="leaderboard-tab" onclick="switchLeaderboard('minesweeper')">扫雷</button>
+            <button class="leader

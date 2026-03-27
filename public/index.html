@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-color="purple">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>游戏中心 - 您的娱乐天地</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- 导航栏 -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo">
+        <span class="logo-icon">🎮</span>
+        <span class="logo-text">游戏中心</span>
+      </a>
+      
+      <nav class="nav-desktop" id="navLinksDesktop">
+        <a href="/auth.html" class="btn btn-secondary">登录 / 注册</a>
+      </nav>
+      
+      <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+    </div>
+  </header>
+
+  <!-- 移动端菜单 -->
+  <div class="mobile-menu" id="mobileMenu">
+    <nav id="navLinksMobile">
+      <a href="/auth.html" class="btn btn-secondary">登录 / 注册</a>
+    </nav>
+  </div>
+
+  <!-- 主要内容 -->
+  <main class="main">
+    <div class="container">
+      <!-- 英雄区域 -->
+      <section class="hero">
+        <div class="hero-content">
+          <h1 class="hero-title">🎮 游戏中心</h1>
+          <p class="hero-subtitle">畅玩经典小游戏，挑战排行榜，与好友一较高下！</p>
+          <div class="hero-actions">
+            <a href="/games.html" class="btn btn-primary btn-lg">开始游戏 →</a>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-value" id="totalGames">6</div>
+            <div class="stat-label">经典游戏</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="totalPlayers">--</div>
+            <div class="stat-label">活跃玩家</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="totalScores">--</div>
+            <div class="stat-label">游戏记录</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 游戏展示 -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">🎯 热门游戏</h2>
+          <a href="/games.html" class="btn btn-secondary">查看全部</a>
+        </div>
+        
+        <div class="games-preview">
+          <div class="game-preview-card" onclick="location.href='/games.html'">
+            <div class="preview-icon">🔢</div>
+            <h3>2048</h3>
+            <p>数字合并挑战</p>
+          </div>
+          <div class="game-preview-card" onclick="location.href='/games.html'">
+            <div class="preview-icon">🐍</div>
+            <h3>贪吃蛇</h3>
+            <p>经典街机游戏</p>
+          </div>
+          <div class="game-preview-card" onclick="location.href='/games.html'">
+            <div class="preview-icon">🐦</div>
+            <h3>Flappy Bird</h3>
+            <p>飞行躲避挑战</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 特性介绍 -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">✨ 平台特色</h2>
+        </div>
+        
+        <div class="features">
+          <div class="feature-card">
+            <div class="feature-icon">🏆</div>
+            <h3>排行榜</h3>
+            <p>与全球玩家竞争，争夺榜首位置</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>数据统计</h3>
+            <p>记录您的游戏数据，追踪进步轨迹</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3>个性主题</h3>
+            <p>多种配色主题，随心切换</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>即时体验</h3>
+            <p>无需下载，打开即玩</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 游戏中心. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- 脚本 -->
+  <script src="/js/theme.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/ui.js"></script>
+  <script>
+    // 初始化
+    document.addEventListener('DOMContentLoaded', async function() {
+      await syncCurrentUser();
+      updateNav();
+      loadStats();
+    });
+
+    async function loadStats() {
+      try {
+        // 这里可以添加获取统计数据的API调用
+        document.getElementById('totalPlayers').textContent = '1.2K+';
+        document.getElementById('totalScores').textContent = '50K+';
+      } catch (e) {
+        console.error('加载统计数据失败:', e);
+      }
+    }
+  </script>
+</body>
+</html>
