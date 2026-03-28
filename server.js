@@ -284,6 +284,35 @@ app.get('/api/games/:gameId/stats', async (req, res) => {
   }
 });
 
+// ============ 统计API ============
+
+// 获取平台统计数据
+app.get('/api/stats', async (req, res) => {
+  try {
+    const users = await db.getAllUsers();
+    const totalUsers = users.length;
+    
+    // 计算总游戏场次
+    let totalGames = 0;
+    const games = ['2048', 'snake', 'flappy', 'memory', 'minesweeper', 'breakout'];
+    for (const gameId of games) {
+      const stats = await db.getGameStats(gameId);
+      totalGames += stats.games || 0;
+    }
+    
+    res.json({
+      success: true,
+      data: {
+        totalUsers,
+        totalGames
+      }
+    });
+  } catch (error) {
+    console.error('获取统计数据失败:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
+  }
+});
+
 // ============ 通知API ============
 
 // 获取用户通知

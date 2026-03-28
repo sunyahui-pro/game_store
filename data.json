@@ -1,0 +1,80 @@
+{
+  "users": {
+    "1": {
+      "id": 1,
+      "username": "admin",
+      "password": "$2a$10$fWFUtyHBhke1xXTHK79edOiX0sm.I3d1Ijy67LtHqWokjZ/gTTdC.",
+      "nickname": "管理员",
+      "avatar": null,
+      "role": "admin",
+      "level": 1,
+      "exp": 1,
+      "created_at": "2026-03-28T07:46:10.445Z",
+      "last_login": "2026-03-28T07:53:18.696Z"
+    },
+    "2": {
+      "id": 2,
+      "username": "feizi",
+      "password": "$2a$10$43D/mDqZLUNp0Kuo4voioeivUgcE2NhZ9x8nQH8.u6S9aqv4Drdi6",
+      "nickname": "肥子",
+      "avatar": null,
+      "role": "user",
+      "level": 1,
+      "exp": 20,
+      "created_at": "2026-03-28T07:52:03.635Z",
+      "last_login": "2026-03-28T07:56:01.194Z"
+    }
+  },
+  "gameScores": {
+    "2:snake": {
+      "user_id": 2,
+      "game_id": "snake",
+      "score": 30,
+      "created_at": "2026-03-28T07:51:00.290Z"
+    },
+    "1:snake": {
+      "user_id": 1,
+      "game_id": "snake",
+      "score": 20,
+      "created_at": "2026-03-28T07:53:35.932Z"
+    },
+    "2:2048": {
+      "user_id": 2,
+      "game_id": "2048",
+      "score": 1800,
+      "created_at": "2026-03-28T07:57:07.720Z"
+    }
+  },
+  "gameHistory": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "game_id": "snake",
+      "score": 30,
+      "created_at": "2026-03-28T07:51:00.290Z"
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "game_id": "snake",
+      "score": 10,
+      "created_at": "2026-03-28T07:52:52.565Z"
+    },
+    {
+      "id": 3,
+      "user_id": 1,
+      "game_id": "snake",
+      "score": 20,
+      "created_at": "2026-03-28T07:53:35.932Z"
+    },
+    {
+      "id": 4,
+      "user_id": 2,
+      "game_id": "2048",
+      "score": 1800,
+      "created_at": "2026-03-28T07:57:07.720Z"
+    }
+  ],
+  "notifications": {},
+  "nextId": 3
+}

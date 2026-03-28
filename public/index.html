@@ -91,7 +91,7 @@
         </div>
         
         <div class="features">
-          <div class="feature-card" onclick="location.href='/games.html'" style="cursor: pointer;">
+          <div class="feature-card" onclick="location.href='/games.html#leaderboard'" style="cursor: pointer;">
             <div class="feature-icon">🏆</div>
             <h3>排行榜</h3>
             <p>与全球玩家竞争，争夺榜首位置</p>
@@ -138,9 +138,14 @@
 
     async function loadStats() {
       try {
-        // 这里可以添加获取统计数据的API调用
-        document.getElementById('totalPlayers').textContent = '1.2K+';
-        document.getElementById('totalScores').textContent = '50K+';
+        // 获取平台统计数据
+        const response = await fetch('/api/stats');
+        const result = await response.json();
+        
+        if (result.success) {
+          document.getElementById('totalPlayers').textContent = result.data.totalUsers || 0;
+          document.getElementById('totalScores').textContent = result.data.totalGames || 0;
+        }
       } catch (e) {
         console.error('加载统计数据失败:', e);
       }

@@ -187,7 +187,7 @@
       </div>
 
       <!-- 排行榜 -->
-      <div class="leaderboard-section" id="leaderboardSection">
+      <div class="leaderboard-section" id="leaderboard">
         <div class="leaderboard-header">
           <div class="leaderboard-title">
             <span>🏆</span>
@@ -231,7 +231,17 @@
       updateNav();
       checkAuth();
       loadGameStats();
-      loadLeaderboard(currentGame);
+      
+      // 加载排行榜
+      await loadLeaderboard(currentGame);
+      
+      // 如果有锚点，滚动到对应位置
+      if (location.hash === '#leaderboard') {
+        const leaderboardSection = document.getElementById('leaderboard');
+        if (leaderboardSection) {
+          leaderboardSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
     });
 
     // 检查登录状态
@@ -239,11 +249,14 @@
       if (!isLoggedIn()) {
         document.getElementById('loginRequired').classList.remove('hidden');
         document.getElementById('gamesPage').classList.add('hidden');
-        document.getElementById('leaderboardSection').classList.add('hidden');
       } else {
         document.getElementById('loginRequired').classList.add('hidden');
         document.getElementById('gamesPage').classList.remove('hidden');
-        document.getElementById('leaderboardSection').classList.remove('hidden');
+      }
+      // 排行榜始终显示
+      const leaderboardSection = document.getElementById('leaderboard');
+      if (leaderboardSection) {
+        leaderboardSection.classList.remove('hidden');
       }
     }
 
@@ -309,10 +322,16 @@
     // 加载排行榜
     async function loadLeaderboard(gameId) {
       const listEl = document.getElementById('leaderboardList');
+      if (!listEl) {
+        console.error('leaderboardList 元素未找到');
+        return;
+      }
       listEl.innerHTML = '<div class="loading">加载中...</div>';
       
       try {
+        console.log('正在加载排行榜:', gameId);
         const response = await gameAPI.getLeaderboard(gameId, 10);
+        console.log('排行榜响应:', response);
         
         if (response.success && response.data.length > 0) {
           let html = '';

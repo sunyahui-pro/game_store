@@ -27,6 +27,16 @@
       grid-template-rows: repeat(4, 80px);
       gap: 10px;
       margin: 0 auto;
+      position: relative;
+    }
+    
+    .tiles-layer {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 350px;
+      height: 350px;
+      pointer-events: none;
     }
     
     .grid-cell {
@@ -49,6 +59,7 @@
       animation: appear 0.2s ease;
       width: 80px;
       height: 80px;
+      position: absolute;
     }
     
     @keyframes appear {
@@ -194,7 +205,9 @@
       
       <div class="game-canvas-container game-2048">
         <div class="canvas-wrapper">
-          <div class="grid-container" id="gridContainer" tabindex="0" style="outline: none; cursor: pointer;"></div>
+          <div class="grid-container" id="gridContainer" tabindex="0" style="outline: none; cursor: pointer;">
+            <div class="tiles-layer" id="tilesLayer"></div>
+          </div>
           <div class="game-over-overlay" id="gameOverOverlay">
             <div class="game-over-title">游戏结束!</div>
             <button class="btn btn-primary" onclick="newGame()">再试一次</button>
@@ -302,6 +315,8 @@
       if (backgroundCellsInitialized) return;
       
       const container = document.getElementById('gridContainer');
+      // 保留 tiles-layer，只添加背景格子
+      const tilesLayer = document.getElementById('tilesLayer');
       container.innerHTML = '';
       
       // 添加16个背景格子
@@ -311,27 +326,34 @@
         container.appendChild(cell);
       }
       
+      // 把 tiles-layer 加回去
+      if (tilesLayer) {
+        container.appendChild(tilesLayer);
+      }
+      
       backgroundCellsInitialized = true;
     }
     
     // 渲染网格（只更新数字方块）
     function renderGrid() {
-      const container = document.getElementById('gridContainer');
+      const tilesLayer = document.getElementById('tilesLayer');
+      if (!tilesLayer) return;
       
-      // 移除旧的数字方块（保留背景格子）
-      const oldTiles = container.querySelectorAll('.tile');
-      oldTiles.forEach(tile => tile.remove());
+      // 清空旧的数字方块
+      tilesLayer.innerHTML = '';
       
-      // 添加新的数字方块
+      // 添加新的数字方块（使用绝对定位）
+      const cellSize = 80;
+      const gap = 10;
       for (let r = 0; r < GRID_SIZE; r++) {
         for (let c = 0; c < GRID_SIZE; c++) {
           if (grid[r][c] !== 0) {
             const tile = document.createElement('div');
             tile.className = `tile tile-${grid[r][c]}`;
             tile.textContent = grid[r][c];
-            tile.style.gridRow = r + 1;
-            tile.style.gridColumn = c + 1;
-            container.appendChild(tile);
+            tile.style.left = (c * (cellSize + gap)) + 'px';
+            tile.style.top = (r * (cellSize + gap)) + 'px';
+            tilesLayer.appendChild(tile);
           }
         }
       }
