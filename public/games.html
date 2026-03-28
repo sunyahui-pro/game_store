@@ -199,4 +199,143 @@
             <button class="leaderboard-tab" onclick="switchLeaderboard('flappy')">Flappy 鸟</button>
             <button class="leaderboard-tab" onclick="switchLeaderboard('memory')">记忆翻牌</button>
             <button class="leaderboard-tab" onclick="switchLeaderboard('minesweeper')">扫雷</button>
-            <button class="leader
+            <button class="leaderboard-tab" onclick="switchLeaderboard('breakout')">打砖块</button>
+          </div>
+        </div>
+        <div class="leaderboard-list" id="leaderboardList">
+          <!-- 排行榜内容将在这里动态加载 -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 游戏中心. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- 脚本 -->
+  <script src="/js/theme.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/ui.js"></script>
+  <script>
+    // 当前选中的游戏
+    let currentGame = '2048';
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', async function() {
+      await syncCurrentUser();
+      updateNav();
+      checkAuth();
+      loadGameStats();
+      loadLeaderboard(currentGame);
+    });
+
+    // 检查登录状态
+    function checkAuth() {
+      if (!isLoggedIn()) {
+        document.getElementById('loginRequired').classList.remove('hidden');
+        document.getElementById('gamesPage').classList.add('hidden');
+        document.getElementById('leaderboardSection').classList.add('hidden');
+      } else {
+        document.getElementById('loginRequired').classList.add('hidden');
+        document.getElementById('gamesPage').classList.remove('hidden');
+        document.getElementById('leaderboardSection').classList.remove('hidden');
+      }
+    }
+
+    // 开始游戏
+    function startGame(gameId) {
+      if (!isLoggedIn()) {
+        showNotification('请先登录后再开始游戏', 'warning');
+        return;
+      }
+      
+      // 映射游戏ID到文件路径
+      const gameFiles = {
+        '2048': '/game/2048.html',
+        'snake': '/game/snake.html',
+        'flappy': '/game/flappy.html',
+        'memory': '/game/memory.html',
+        'minesweeper': '/game/minesweeper.html',
+        'breakout': '/game/breakout.html'
+      };
+
+      const gameFile = gameFiles[gameId];
+      if (gameFile) {
+        location.href = gameFile;
+      } else {
+        showNotification('游戏暂未上线，敬请期待！', 'info');
+      }
+    }
+
+    // 切换排行榜
+    function switchLeaderboard(gameId) {
+      currentGame = gameId;
+      
+      // 更新标签样式
+      document.querySelectorAll('.leaderboard-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+      
+      // 加载排行榜数据
+      loadLeaderboard(gameId);
+    }
+
+    // 加载游戏统计
+    async function loadGameStats() {
+      const games = ['2048', 'snake', 'flappy', 'memory', 'minesweeper', 'breakout'];
+      
+      for (const gameId of games) {
+        try {
+          const stats = await gameAPI.getStats(gameId);
+          if (stats.success) {
+            const playersEl = document.getElementById(`stat-${gameId}-players`);
+            const bestEl = document.getElementById(`stat-${gameId}-best`);
+            
+            if (playersEl) playersEl.textContent = stats.data.players || 0;
+            if (bestEl) bestEl.textContent = stats.data.best || 0;
+          }
+        } catch (e) {
+          console.error(`加载${gameId}统计失败:`, e);
+        }
+      }
+    }
+
+    // 加载排行榜
+    async function loadLeaderboard(gameId) {
+      const listEl = document.getElementById('leaderboardList');
+      listEl.innerHTML = '<div class="loading">加载中...</div>';
+      
+      try {
+        const response = await gameAPI.getLeaderboard(gameId, 10);
+        
+        if (response.success && response.data.length > 0) {
+          let html = '';
+          response.data.forEach((item, index) => {
+            const rank = index + 1;
+            const rankClass = rank <= 3 ? `rank-${rank}` : '';
+            html += `
+              <div class="leaderboard-item ${rankClass}">
+                <div class="leaderboard-rank">${rank}</div>
+                <div class="leaderboard-user">${escapeHtml(item.nickname || item.username)}</div>
+                <div class="leaderboard-score">${item.score.toLocaleString()}</div>
+              </div>
+            `;
+          });
+          listEl.innerHTML = html;
+        } else {
+          listEl.innerHTML = '<div class="empty">暂无数据</div>';
+        }
+      } catch (e) {
+        console.error('加载排行榜失败:', e);
+        listEl.innerHTML = '<div class="error">加载失败</div>';
+      }
+    }
+  </script>
+</body>
+</html>
