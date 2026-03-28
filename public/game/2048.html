@@ -297,7 +297,10 @@
     }
     
     // 初始化背景格子（只调用一次）
+    let backgroundCellsInitialized = false;
     function initBackgroundCells() {
+      if (backgroundCellsInitialized) return;
+      
       const container = document.getElementById('gridContainer');
       container.innerHTML = '';
       
@@ -307,6 +310,8 @@
         cell.className = 'grid-cell';
         container.appendChild(cell);
       }
+      
+      backgroundCellsInitialized = true;
     }
     
     // 渲染网格（只更新数字方块）
