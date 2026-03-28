@@ -263,6 +263,7 @@
     
     // 新游戏
     function newGame() {
+      initBackgroundCells();
       initGrid();
       addRandomTile();
       addRandomTile();
@@ -286,19 +287,28 @@
       }
     }
     
-    // 渲染网格
-    function renderGrid() {
+    // 初始化背景格子（只调用一次）
+    function initBackgroundCells() {
       const container = document.getElementById('gridContainer');
       container.innerHTML = '';
       
-      // 添加背景格子
+      // 添加16个背景格子
       for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
         const cell = document.createElement('div');
         cell.className = 'grid-cell';
         container.appendChild(cell);
       }
+    }
+    
+    // 渲染网格（只更新数字方块）
+    function renderGrid() {
+      const container = document.getElementById('gridContainer');
       
-      // 添加数字方块
+      // 移除旧的数字方块（保留背景格子）
+      const oldTiles = container.querySelectorAll('.tile');
+      oldTiles.forEach(tile => tile.remove());
+      
+      // 添加新的数字方块
       for (let r = 0; r < GRID_SIZE; r++) {
         for (let c = 0; c < GRID_SIZE; c++) {
           if (grid[r][c] !== 0) {
