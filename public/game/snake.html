@@ -159,9 +159,6 @@
     function update() {
       if (isPaused || gameOver) return;
       
-      // 还没开始移动（玩家没按方向键）
-      if (dx === 0 && dy === 0) return;
-      
       const head = {x: snake[0].x + dx, y: snake[0].y + dy};
       
       // 撞墙检测
@@ -224,16 +221,20 @@
       
       switch(e.key) {
         case 'ArrowUp':
-          if (dy === 0) { dx = 0; dy = -1; }
+          // 只有当前不是向下移动时才能向上（初始状态 dy=0 也可以）
+          if (dy !== 1) { dx = 0; dy = -1; }
           break;
         case 'ArrowDown':
-          if (dy === 0) { dx = 0; dy = 1; }
+          // 只有当前不是向上移动时才能向下
+          if (dy !== -1) { dx = 0; dy = 1; }
           break;
         case 'ArrowLeft':
-          if (dx === 0) { dx = -1; dy = 0; }
+          // 只有当前不是向右移动时才能向左
+          if (dx !== 1) { dx = -1; dy = 0; }
           break;
         case 'ArrowRight':
-          if (dx === 0) { dx = 1; dy = 0; }
+          // 只有当前不是向左移动时才能向右
+          if (dx !== -1) { dx = 1; dy = 0; }
           break;
         case ' ':
           togglePause();
