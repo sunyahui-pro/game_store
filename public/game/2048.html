@@ -194,7 +194,7 @@
       
       <div class="game-canvas-container game-2048">
         <div class="canvas-wrapper">
-          <div class="grid-container" id="gridContainer"></div>
+          <div class="grid-container" id="gridContainer" tabindex="0" style="outline: none; cursor: pointer;"></div>
           <div class="game-over-overlay" id="gameOverOverlay">
             <div class="game-over-title">游戏结束!</div>
             <button class="btn btn-primary" onclick="newGame()">再试一次</button>
@@ -243,8 +243,17 @@
       // 初始化游戏
       newGame();
       
-      // 键盘控制
-      document.addEventListener('keydown', handleKeyDown);
+      // 键盘控制 - 绑定到游戏容器
+      const gridContainer = document.getElementById('gridContainer');
+      gridContainer.addEventListener('keydown', handleKeyDown);
+      
+      // 点击获得焦点
+      gridContainer.addEventListener('click', function() {
+        gridContainer.focus();
+      });
+      
+      // 自动获得焦点
+      gridContainer.focus();
       
       // 触摸控制
       if (typeof initTouchControls === 'function') {

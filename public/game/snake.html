@@ -84,7 +84,7 @@
       
       <div class="game-canvas-container">
         <div class="canvas-wrapper">
-          <canvas id="gameCanvas" width="400" height="400"></canvas>
+          <canvas id="gameCanvas" width="400" height="400" tabindex="0" style="outline: none; cursor: pointer;"></canvas>
           <div class="game-over-overlay" id="gameOverOverlay">
             <div class="game-over-title">游戏结束!</div>
             <div style="color: white; margin-bottom: 1rem;">最终得分: <span id="finalScore">0</span></div>
@@ -127,9 +127,22 @@
     document.addEventListener('DOMContentLoaded', async function() {
       await syncCurrentUser();
       updateNav();
-      initMobileMenu();
+      if (typeof initMobileMenu === 'function') {
+        initMobileMenu();
+      }
       newGame();
-      document.addEventListener('keydown', handleKeyDown);
+      
+      // 键盘事件绑定到 canvas，而不是 document
+      const canvas = document.getElementById('gameCanvas');
+      canvas.addEventListener('keydown', handleKeyDown);
+      
+      // 点击 canvas 获得焦点
+      canvas.addEventListener('click', function() {
+        canvas.focus();
+      });
+      
+      // 自动获得焦点
+      canvas.focus();
     });
     
     function newGame() {
