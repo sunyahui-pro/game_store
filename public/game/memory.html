@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-color="purple">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>记忆翻牌 - 游戏中心</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-template-rows: repeat(4, 80px);
+      gap: 10px;
+      margin: 0 auto;
+      padding: 20px;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      width: fit-content;
+    }
+    
+    .card {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+      user-select: none;
+    }
+    
+    .card:hover {
+      transform: scale(1.05);
+    }
+    
+    .card.flipped {
+      background: white;
+    }
+    
+    .card.matched {
+      background: #4ade80;
+      cursor: default;
+      animation: matchPulse 0.5s ease;
+    }
+    
+    @keyframes matchPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    
+    .card-content {
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .card.flipped .card-content,
+    .card.matched .card-content {
+      opacity: 1;
+    }
+    
+    .game-info {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-6);
+      margin-bottom: var(--space-4);
+    }
+    
+    .info-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-3) var(--space-4);
+      text-align: center;
+      min-width: 100px;
+    }
+    
+    .info-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    
+    .info-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .game-over-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      z-index: 100;
+    }
+    
+    .game-over-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .game-over-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: var(--space-4);
+    }
+    
+    .game-over-score {
+      font-size: 1.25rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: var(--space-4);
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo">
+        <span class="logo-icon">🎮</span>
+        <span class="logo-text">游戏中心</span>
+      </a>
+      <nav class="nav-desktop" id="navLinksDesktop"></nav>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <nav id="navLinksMobile"></nav>
+  </div>
+
+  <main class="main">
+    <div class="game-container">
+      <div class="game-header">
+        <h1 class="game-title"><span>🃏</span><span>记忆翻牌</span></h1>
+        <div class="game-controls">
+          <button class="btn btn-secondary" onclick="newGame()">🔄 新游戏</button>
+          <a href="/games.html" class="btn btn-secondary">← 返回</a>
+        </div>
+      </div>
+      
+      <div class="game-info">
+        <div class="info-box">
+          <div class="info-label">步数</div>
+          <div class="info-value" id="moves">0</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">时间</div>
+          <div class="info-value" id="time">0:00</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">配对</div>
+          <div class="info-value" id="matches">0/8</div>
+        </div>
+      </div>
+      
+      <div class="game-board" id="gameBoard"></div>
+      
+      <div class="game-instructions">
+        <h3>🎮 游戏说明</h3>
+        <ul>
+          <li>点击卡片翻转，找出相同的配对</li>
+          <li>每次只能翻转两张卡片</li>
+          <li>配对成功卡片保持翻开状态</li>
+          <li>找出所有配对完成游戏</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 游戏中心. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- 游戏结束弹窗 -->
+  <div class="game-over-overlay" id="gameOverOverlay">
+    <div class="game-over-title">🎉 恭喜完成!</div>
+    <div class="game-over-score">
+      用时: <span id="finalTime">0:00</span> | 步数: <span id="finalMoves">0</span>
+    </div>
+    <button class="btn btn-primary" onclick="newGame()">再玩一次</button>
+  </div>
+
+  <!-- 脚本 -->
+  <script src="/js/theme.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/ui.js"></script>
+  <script>
+    // 游戏状态
+    const emojis = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
+    let cards = [];
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let moves = 0;
+    let gameStartTime = null;
+    let timerInterval = null;
+    let isProcessing = false;
+    
+    // 初始化
+    document.addEventListener('DOMContentLoaded', async function() {
+      await syncCurrentUser();
+      updateNav();
+      if (typeof initMobileMenu === 'function') {
+        initMobileMenu();
+      }
+      newGame();
+    });
+    
+    function newGame() {
+      cards = [];
+      flippedCards = [];
+      matchedPairs = 0;
+      moves = 0;
+      isProcessing = false;
+      
+      document.getElementById('moves').textContent = '0';
+      document.getElementById('matches').textContent = '0/8';
+      document.getElementById('time').textContent = '0:00';
+      document.getElementById('gameOverOverlay').classList.remove('active');
+      
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+      
+      const cardPairs = [...emojis, ...emojis];
+      cards = shuffle(cardPairs);
+      renderBoard();
+      
+      gameStartTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+    
+    function shuffle(array) {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+      }
+      return newArray;
+    }
+    
+    function renderBoard() {
+      const board = document.getElementById('gameBoard');
+      board.innerHTML = '';
+      
+      cards.forEach((emoji, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.index = index;
+        card.innerHTML = `<span class="card-content">${emoji}</span>`;
+        card.addEventListener('click', () => flipCard(index));
+        board.appendChild(card);
+      });
+    }
+    
+    function flipCard(index) {
+      if (isProcessing) return;
+      if (flippedCards.includes(index)) return;
+      
+      const cardElements = document.querySelectorAll('.card');
+      const card = cardElements[index];
+      
+      if (card.classList.contains('matched')) return;
+      
+      card.classList.add('flipped');
+      flippedCards.push(index);
+      
+      if (flippedCards.length === 2) {
+        moves++;
+        document.getElementById('moves').textContent = moves;
+        checkMatch();
+      }
+    }
+    
+    function checkMatch() {
+      isProcessing = true;
+      
+      const [index1, index2] = flippedCards;
+      const cardElements = document.querySelectorAll('.card');
+      
+      if (cards[index1] === cards[index2]) {
+        setTimeout(() => {
+          cardElements[index1].classList.add('matched');
+          cardElements[index2].classList.add('matched');
+          matchedPairs++;
+          document.getElementById('matches').textContent = `${matchedPairs}/8`;
+          flippedCards = [];
+          isProcessing = false;
+          
+          if (matchedPairs === 8) {
+            gameComplete();
+          }
+        }, 500);
+      } else {
+        setTimeout(() => {
+          cardElements[index1].classList.remove('flipped');
+          cardElements[index2].classList.remove('flipped');
+          flippedCards = [];
+          isProcessing = false;
+        }, 1000);
+      }
+    }
+    
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+      document.getElementById('time').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    async function gameComplete() {
+      clearInterval(timerInterval);
+      
+      const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+      
+      document.getElementById('finalTime').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      document.getElementById('finalMoves').textContent = moves;
+      document.getElementById('gameOverOverlay').classList.add('active');
+      
+      const score = Math.max(1000 - moves * 10 - elapsed * 2, 100);
+      
+      if (isLoggedIn()) {
+        try {
+          await gameAPI.submitScore('memory', score);
+          showNotification('分数已提交到排行榜！', 'success');
+        } catch (e) {
+          console.error('提交分数失败:', e);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
