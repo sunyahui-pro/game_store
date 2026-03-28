@@ -301,6 +301,21 @@
 
     // 加载游戏统计
     async function loadGameStats() {
+      // 加载平台总统计数据
+      try {
+        const response = await fetch('/api/stats');
+        const result = await response.json();
+        if (result.success) {
+          const totalPlayersEl = document.getElementById('totalPlayers');
+          const totalGamesEl = document.getElementById('totalGames');
+          if (totalPlayersEl) totalPlayersEl.textContent = result.data.totalUsers || 0;
+          if (totalGamesEl) totalGamesEl.textContent = result.data.totalGames || 0;
+        }
+      } catch (e) {
+        console.error('加载平台统计失败:', e);
+      }
+      
+      // 加载各游戏统计
       const games = ['2048', 'snake', 'flappy', 'memory', 'minesweeper', 'breakout'];
       
       for (const gameId of games) {
@@ -311,7 +326,7 @@
             const bestEl = document.getElementById(`stat-${gameId}-best`);
             
             if (playersEl) playersEl.textContent = stats.data.players || 0;
-            if (bestEl) bestEl.textContent = stats.data.best || 0;
+            if (bestEl) bestEl.textContent = stats.data.best_score || 0;
           }
         } catch (e) {
           console.error(`加载${gameId}统计失败:`, e);

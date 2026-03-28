@@ -20,7 +20,7 @@
       "avatar": null,
       "role": "user",
       "level": 1,
-      "exp": 20,
+      "exp": 60,
       "created_at": "2026-03-28T07:52:03.635Z",
       "last_login": "2026-03-28T07:56:01.194Z"
     }
@@ -41,8 +41,8 @@
     "2:2048": {
       "user_id": 2,
       "game_id": "2048",
-      "score": 1800,
-      "created_at": "2026-03-28T07:57:07.720Z"
+      "score": 3980,
+      "created_at": "2026-03-28T09:33:21.185Z"
     }
   },
   "gameHistory": [
@@ -73,6 +73,13 @@
       "game_id": "2048",
       "score": 1800,
       "created_at": "2026-03-28T07:57:07.720Z"
+    },
+    {
+      "id": 5,
+      "user_id": 2,
+      "game_id": "2048",
+      "score": 3980,
+      "created_at": "2026-03-28T09:33:21.185Z"
     }
   ],
   "notifications": {},
