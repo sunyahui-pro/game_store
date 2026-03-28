@@ -159,6 +159,9 @@
     function update() {
       if (isPaused || gameOver) return;
       
+      // 还没开始移动（玩家没按方向键）
+      if (dx === 0 && dy === 0) return;
+      
       const head = {x: snake[0].x + dx, y: snake[0].y + dy};
       
       // 撞墙检测
@@ -167,8 +170,8 @@
         return;
       }
       
-      // 撞自己检测
-      for (let i = 0; i < snake.length; i++) {
+      // 撞自己检测（跳过第一节，因为那是新头部位置）
+      for (let i = 1; i < snake.length; i++) {
         if (head.x === snake[i].x && head.y === snake[i].y) {
           endGame();
           return;
