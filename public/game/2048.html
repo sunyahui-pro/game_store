@@ -6,6 +6,12 @@
   <title>2048 - 游戏中心</title>
   <link rel="stylesheet" href="/css/style.css">
   <style>
+    :root {
+      --grid-size: 4;
+      --cell-size: 80px;
+      --gap: 10px;
+    }
+    
     .game-2048 {
       --grid-size: 4;
       --cell-size: 80px;
@@ -14,23 +20,25 @@
     
     .grid-container {
       background: #bbada0;
-      border-radius: var(--radius-lg);
-      padding: var(--gap);
+      border-radius: var(--radius-lg, 12px);
+      padding: 10px;
       display: grid;
-      grid-template-columns: repeat(4, var(--cell-size));
-      grid-template-rows: repeat(4, var(--cell-size));
-      gap: var(--gap);
+      grid-template-columns: repeat(4, 80px);
+      grid-template-rows: repeat(4, 80px);
+      gap: 10px;
       margin: 0 auto;
     }
     
     .grid-cell {
       background: rgba(238, 228, 218, 0.35);
-      border-radius: var(--radius);
+      border-radius: var(--radius, 6px);
+      width: 80px;
+      height: 80px;
     }
     
     .tile {
       background: #eee4da;
-      border-radius: var(--radius);
+      border-radius: var(--radius, 6px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -39,6 +47,8 @@
       color: #776e65;
       transition: all 0.15s ease;
       animation: appear 0.2s ease;
+      width: 80px;
+      height: 80px;
     }
     
     @keyframes appear {
@@ -220,16 +230,26 @@
     
     // 初始化
     document.addEventListener('DOMContentLoaded', async function() {
-      await syncCurrentUser();
-      updateNav();
-      initMobileMenu();
+      try {
+        await syncCurrentUser();
+        updateNav();
+        if (typeof initMobileMenu === 'function') {
+          initMobileMenu();
+        }
+      } catch (e) {
+        console.error('初始化导航失败:', e);
+      }
+      
+      // 初始化游戏
       newGame();
       
       // 键盘控制
       document.addEventListener('keydown', handleKeyDown);
       
       // 触摸控制
-      initTouchControls();
+      if (typeof initTouchControls === 'function') {
+        initTouchControls();
+      }
     });
     
     // 初始化网格
@@ -297,6 +317,11 @@
     function handleKeyDown(e) {
       if (gameOver) return;
       
+      // 阻止方向键的默认行为（防止页面滚动）
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+      }
+      
       let moved = false;
       
       switch(e.key) {
@@ -325,7 +350,6 @@
       }
       
       if (moved) {
-        e.preventDefault();
         addRandomTile();
         renderGrid();
         updateScore();

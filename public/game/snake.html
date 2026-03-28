@@ -217,6 +217,11 @@
     function handleKeyDown(e) {
       if (gameOver) return;
       
+      // 阻止方向键和空格的默认行为（防止页面滚动）
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+        e.preventDefault();
+      }
+      
       switch(e.key) {
         case 'ArrowUp':
           if (dy === 0) { dx = 0; dy = -1; }
@@ -231,13 +236,11 @@
           if (dx === 0) { dx = 1; dy = 0; }
           break;
         case ' ':
-          e.preventDefault();
           togglePause();
           return;
         default:
           return;
       }
-      e.preventDefault();
     }
     
     function togglePause() {
