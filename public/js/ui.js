@@ -1,7 +1,7 @@
 // UI交互
 (function() {
   // 初始化移动端菜单
-  function initMobileMenu() {
+  window.initMobileMenu = function() {
     const menuBtn = document.getElementById('mobileMenuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
     

@@ -212,11 +212,16 @@
     
     // 初始化
     document.addEventListener('DOMContentLoaded', async function() {
-      await syncCurrentUser();
-      updateNav();
-      if (typeof initMobileMenu === 'function') {
-        initMobileMenu();
+      try {
+        await syncCurrentUser();
+        updateNav();
+        if (typeof initMobileMenu === 'function') {
+          initMobileMenu();
+        }
+      } catch (e) {
+        console.error('初始化失败:', e);
       }
+      // 确保游戏板立即渲染
       newGame();
     });
     
